@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  api_container:
+    container_name: fiejal_backend
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 35440:35441
+    command: npm run start:dev
+    env_file:
+      - .env
+    networks:
+      - webnet
+    depends_on:
+      - postgres
+  postgres:
+    container_name: fiejal-DataBase
+    image: postgres:14
+    networks:
+      - webnet
+    environment:
+      POSTGRES_PASSWORD: Moca9801
+      POSTGRES_USER: Aimc9801
+      POSTGRES_DB: fiejal
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+networks:
+
+  webnet:
+volumes:
+  postgres_data:
+  pgdata:
+  pgadmin:
