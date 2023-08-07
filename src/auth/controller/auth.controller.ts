@@ -12,6 +12,11 @@ export class AuthController {
         return this.authService.findAll();
     }
 
+    @Get('/filter/:email')
+    getOneByCodempleado(@Param('email') email: string){
+        return this.authService.findOneByCodempleado(email);
+    }
+
     @Post('/register')
     register(@Body() body: any){
         return this.authService.register(body);
@@ -25,6 +30,11 @@ export class AuthController {
     @Put('/update/:email')
     update(@Param('email') email: string, @Body() body: any){
         return this.authService.update(email, body);
+    }
+
+    @Put('update/:email')
+    updatePersonalData(@Param('email') email: string, @Body() body: any){
+        return this.authService.updatePersonalData(email, body);
     }
 
     @Delete('/delete/:email')

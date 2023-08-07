@@ -13,9 +13,16 @@ export class AuthService {
         return this.authRepository.find();
     }
 
+    findOneByCodempleado(email: string){
+        return this.authRepository.findOne( { where: { email: email}})
+    }
+
     async register(body: any){
-        const { password } = body;
+        const { password, codigo } = body;
         const plainToHash = await hash(password, 10);
+
+        const user = await this.authRepository.findOne({ where: { codigo: codigo } })
+        if(user) throw new HttpException('USER_REGISTERED', 404);
 
         body = {...body, password:plainToHash}
 
@@ -37,7 +44,6 @@ export class AuthService {
     }
 
     async update(email: string, body: any){
-      
         const user = await this.authRepository.findOne({ where: { email: email }});
         if(!user) throw new HttpException('USER_NOT_FOUND', 404);
 
@@ -47,6 +53,15 @@ export class AuthService {
 
         this.authRepository.merge(user, body);
         return this.authRepository.save(user);
+    }
+
+    async updatePersonalData(email: string, body){
+        const user = await this.authRepository.findOne( { where: { email: email } })
+
+        if(!user) throw new HttpException('USER_NOT_FOUND', 404);
+
+        this.authRepository.merge(user, body);
+        return this.authRepository.save(user);    
     }
 
     async delete(email: string){

@@ -18,6 +18,7 @@ services:
       - webnet
     depends_on:
       - postgres
+      - s3rver
   postgres:
     container_name: fiejal-DataBase
     image: postgres:14
@@ -34,10 +35,19 @@ services:
       - 5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-networks:
+  s3rver:
+    container_name: fiejal_s3Data
+    image: lphoward/fake-s3
+    ports:
+      - 4568:4568
+    volumes:
+      - ./s3_data:/tmp/data
 
+networks:
   webnet:
+
 volumes:
   postgres_data:
   pgdata:
   pgadmin:
+  s3_data:
