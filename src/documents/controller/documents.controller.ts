@@ -1,12 +1,10 @@
 import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { DocumentsService } from "../service/documents.service";
-import { join } from "path";
 import { createHash } from "crypto";
 import * as fs from 'fs';
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { existsSync, mkdirSync } from "fs";
-import { fileURLToPath } from "url";
 
 
 
@@ -61,5 +59,51 @@ export class DocumentsController{
             signDate: null
         }
         return this.documentsService.createDocument(objeto);
+    }
+
+      //FUNCION PARA CARGAR EL ARCHIVO .cer 
+    @UseInterceptors(FileInterceptor
+      ('file', {
+        storage: diskStorage({
+        destination: './s3_data/temp/cer',
+        filename: function(req, file, cb){
+          cb(null, file.originalname);
+        }})
+      })
+    )
+    @Post('uploadCER')
+    uploadCERFile(@UploadedFile() file: Express.Multer.File,){
+      console.log(file)
+      return{
+        msg: `Archivo ${file.filename} cargado correctamente ${file}`
+      }
+    }
+
+    //FUNCION PARA CARGAR EL ARCHIVO .key 
+    @UseInterceptors(FileInterceptor
+      ('file', {
+        storage: diskStorage({
+        destination: './s3_data/temp/key',
+        filename: function(req, file, cb){
+          cb(null, file.originalname);
+        }})
+      })
+    )
+    @Post('uploadKEY')
+    uploadKEYFile(@UploadedFile() file: Express.Multer.File,){
+      console.log(file)
+      return{
+        msg: `Archivo ${file.filename} cargado correctamente ${file}`
+      }
+    }
+
+    @Post('/signDocument/')
+    signDocument(@Body() body: any){
+        return this.documentsService.signDocument(body);
+    }
+
+    @Post('/designDocument')
+    testDocument(){
+      return this.documentsService.testDocument();
     }
 }

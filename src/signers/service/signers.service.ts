@@ -30,6 +30,6 @@ export class SignersService{
         if(signer) throw new HttpException('USER_IS_ALREDY_A_SIGNATORY_FOR_THIS_DOCUMENT', 404);
 
         const newSigner = this.signersRepository.create(objeto);
-        return await this.signersRepository.save(newSigner)
+        return await this.signersRepository.save(newSigner);
     }
 }

@@ -36,7 +36,6 @@ export class AuthService {
         const user = await this.authRepository.findOne({ where:{ email: email }});
         if(!user) throw new HttpException('USER_NOT_FOUND', 404);
         
-
         const checkPass = await compare(password, user.password)
         if(!checkPass) throw new HttpException('PASSWORD_INCORECT', 403)
 
